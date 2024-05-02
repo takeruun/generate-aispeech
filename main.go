@@ -43,19 +43,17 @@ func main() {
 		commonFileName := fmt.Sprintf("outputs/%d_%s", i, row["english"])
 		go func() {
 			filename := commonFileName + "_" + SPEECH_LANGUAGE_JP + ".mp3"
-			fmt.Println(filename)
-			// if err := GenerateAiSpeech(ctx, client, row["japanese"], SPEECH_LANGUAGE_JP, filename); err != nil {
-			// 	log.Fatal(err)
-			// }
+			if err := GenerateAiSpeech(ctx, client, row["japanese"], SPEECH_LANGUAGE_JP, filename); err != nil {
+				log.Fatal(err)
+			}
 			wg.Done()
 		}()
 
 		go func() {
 			filename := commonFileName + "_" + SPEECH_LANGUAGE_EN + ".mp3"
-			fmt.Println(filename)
-			// if err := GenerateAiSpeech(ctx, client, row["english"], SPEECH_LANGUAGE_EN, filename); err != nil {
-			// 	log.Fatal(err)
-			// }
+			if err := GenerateAiSpeech(ctx, client, row["english"], SPEECH_LANGUAGE_EN, filename); err != nil {
+				log.Fatal(err)
+			}
 			wg.Done()
 		}()
 	}
