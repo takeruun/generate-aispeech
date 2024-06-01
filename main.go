@@ -17,8 +17,11 @@ import (
 const SPEECH_LANGUAGE_JP = "ja_JP"
 const SPEECH_LANGUAGE_EN = "en_US"
 
+const JP_COLUMN = "日本語"
+const EN_COLUMN = "英語"
+
 func main() {
-	bytes, err := os.ReadFile("text.csv")
+	bytes, err := os.ReadFile("inputs/jp-words.csv")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -40,10 +43,11 @@ func main() {
 	wg.Add(len(rows) * 2)
 
 	for i, row := range rows {
-		commonFileName := fmt.Sprintf("outputs/%d_%s", i, row["english"])
+		commonFileName := fmt.Sprintf("outputs/%d_%s", i, row[EN_COLUMN])
 		go func() {
 			filename := commonFileName + "_" + SPEECH_LANGUAGE_JP + ".mp3"
-			if err := GenerateAiSpeech(ctx, client, row["japanese"], SPEECH_LANGUAGE_JP, filename); err != nil {
+			if err := GenerateAiSpeech(ctx, client, row[JP_COLUMN], SPEECH_LANGUAGE_JP, filename); err != nil {
+				log.Fatal("「" + filename + "」の作成に失敗")
 				log.Fatal(err)
 			}
 			wg.Done()
@@ -51,7 +55,8 @@ func main() {
 
 		go func() {
 			filename := commonFileName + "_" + SPEECH_LANGUAGE_EN + ".mp3"
-			if err := GenerateAiSpeech(ctx, client, row["english"], SPEECH_LANGUAGE_EN, filename); err != nil {
+			if err := GenerateAiSpeech(ctx, client, row[EN_COLUMN], SPEECH_LANGUAGE_EN, filename); err != nil {
+				log.Fatal("「" + filename + "」の作成に失敗")
 				log.Fatal(err)
 			}
 			wg.Done()
